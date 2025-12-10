@@ -85,8 +85,26 @@ if st.button("🔍 Analyze Message"):
         # PHISHING PREDICTION
         # -----------------------------
         phishing_features = extract_phishing_features(user_input)
-        phish_pred = phishing_model.predict(phishing_features)[0]
-        phish_prob = phishing_model.predict_proba(phishing_features)[0][1]
+
+        # If the model was trained with a DataFrame, it likely has feature_names_in_.
+        # Reindex to the same columns (order) to avoid ValueError about feature names.
+        try:
+            if hasattr(phishing_model, "feature_names_in_"):
+                expected = list(phishing_model.feature_names_in_)
+                # reindex will add any missing columns with NaN -> we fill with 0
+                phishing_features = phishing_features.reindex(columns=expected, fill_value=0)
+                X_phish = phishing_features.values
+            else:
+                # If model wasn't trained with feature names, pass a numpy array
+                X_phish = phishing_features.values
+
+            phish_pred = phishing_model.predict(X_phish)[0]
+            phish_prob = phishing_model.predict_proba(X_phish)[0][1]
+        except Exception as e:
+            # Show helpful debugging info in the app and stop gracefully
+            st.error("Error when running phishing prediction. See details below.")
+            st.exception(e)
+            st.stop()
 
         # -----------------------------
         # Results Display
@@ -116,4 +134,3 @@ st.markdown(
     </p>
     """,
     unsafe_allow_html=True,
-)
