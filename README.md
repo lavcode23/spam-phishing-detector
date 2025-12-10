@@ -38,3 +38,5 @@ Uses both text + URL-based features:
 
 ## 📂 Project Structure
 
+🚀 Live Demo: https://spam-phishing-detector-veo8drqrvr8qxojgs6bvbr.streamlit.app/
+
