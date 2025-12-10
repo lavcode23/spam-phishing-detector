@@ -1,7 +1,6 @@
 import streamlit as st
 import joblib
 import pandas as pd
-from phishing_features import extract_phishing_features
 from clean_text import clean_text
 
 # Load models & vectorizer
@@ -36,3 +35,4 @@ if st.button("Predict"):
             st.warning("🚫 This email is **SPAM**.")
         else:
             st.success("✔ This email is safe (HAM).")
+
